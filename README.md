@@ -1,0 +1,1 @@
+LiteMentor.AI – A multilingual, privacy-first, AI-powered feedback tool for students. Fully frontend, zero backend cost. Built in public.

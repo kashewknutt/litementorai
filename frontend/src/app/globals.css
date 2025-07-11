@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fefefe;
+  --foreground: #0a0a0a;
+  --font-ovo: 'Ovo', serif;
+  --font-outfit: 'Outfit', sans-serif;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-outfit);
+  line-height: 1.6;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-ovo);
+}
+
+@layer utilities {
+  .glow {
+    filter: blur(100px);
+    opacity: 0.2;
+  }
+}
