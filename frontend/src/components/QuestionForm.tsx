@@ -3,12 +3,14 @@
 
 import { evaluateAnswer, EvaluationResult } from '@/lib/evaluateAnswer'
 import { useState } from 'react'
+import { Info } from 'lucide-react'
 
 export default function QuestionForm() {
   const [question, setQuestion] = useState('')
   const [answer, setAnswer] = useState('')
   const [result, setResult] = useState<EvaluationResult | null>(null)
   const [loading, setLoading] = useState(false)
+  const [openAiKey, setOpenAiKey] = useState('')
 
   const handleEvaluate = async () => {
     if (!question || !answer) return
@@ -19,49 +21,70 @@ export default function QuestionForm() {
   }
 
   return (
-    <section className="bg-white/80 border border-sky-100 shadow-md backdrop-blur-xl rounded-2xl p-8 max-w-3xl mx-auto z-10 relative">
-      <label className="block mb-4">
-        <span className="text-gray-700 font-medium">Enter your academic question:</span>
-        <input
-          type="text"
-          placeholder="e.g. What caused the fall of the Roman Empire?"
-          value={question}
-          onChange={(e) => setQuestion(e.target.value)}
-          className="mt-2 w-full p-3 border border-sky-200 rounded-xl focus:ring-2 focus:ring-sky-300"
-        />
-      </label>
+    <section id="demo" className="py-24 px-6">
+      <div className="max-w-3xl mx-auto text-center">
+        <h2 className="text-4xl font-ovo text-gray-800 mb-4">Try It Yourself</h2>
+        <p className="text-lg font-outfit text-gray-600 mb-8">
+          Paste your question and answer below. We'll give you clear AI feedback — free and private.
+        </p>
+        <form className="space-y-6">
+          <div className="grid gap-6">
+            <input
+              value={question}
+              onChange={(e) => setQuestion(e.target.value)}
+              required
+              placeholder="Enter your academic question"
+              className="p-3 border border-gray-300 rounded-md w-full"
+            />
+            <textarea
+              value={answer}
+              onChange={(e) => setAnswer(e.target.value)}
+              rows={6}
+              required
+              placeholder="Paste your answer here"
+              className="p-3 border border-gray-300 rounded-md w-full"
+            ></textarea>
 
-      <label className="block mb-4">
-        <span className="text-gray-700 font-medium">Your answer:</span>
-        <textarea
-          placeholder="Type your answer here..."
-          value={answer}
-          onChange={(e) => setAnswer(e.target.value)}
-          className="mt-2 w-full p-3 border border-sky-200 rounded-xl resize-none focus:ring-2 focus:ring-sky-300"
-          rows={6}
-        ></textarea>
-      </label>
+            {/* <div className="relative">
+              <input
+                type="text"
+                value={openAiKey}
+                onChange={(e) => setOpenAiKey(e.target.value)}
+                placeholder="Optional: Your OpenAI API Key"
+                className="p-3 border border-gray-300 rounded-md w-full"
+              />
+              <div className="absolute right-3 top-3 group">
+                <Info size={18} className="text-gray-400" />
+                <div className="absolute top-6 right-0 w-64 bg-white text-sm text-gray-700 p-3 border border-gray-300 rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                  Your key is never stored or sent to our backend. This connects directly to OpenAI. No hidden charges.
+                </div>
+              </div>
+            </div> */}
+          </div>
 
-      <button
-        onClick={handleEvaluate}
-        disabled={loading}
-        className={`mt-4 px-6 py-2 rounded-xl font-medium text-white transition-all ${loading ? 'bg-sky-300 cursor-not-allowed' : 'bg-sky-500 hover:bg-sky-600'}`}
-      >
-        {loading ? 'Evaluating...' : 'Evaluate Answer'}
-      </button>
+          <button
+            type="button"
+            onClick={handleEvaluate}
+            disabled={loading}
+            className={`w-full py-3 rounded-xl font-medium text-white transition-all text-lg ${loading ? 'bg-sky-300 cursor-not-allowed' : 'bg-sky-500 hover:bg-sky-600'}`}
+          >
+            {loading ? 'Evaluating Answer...' : 'Evaluate Answer'}
+          </button>
 
-      {result && (
-        <div className="mt-6 border p-4 rounded-xl bg-white/90 shadow">
-          <p className="text-gray-700 font-medium mb-2">Feedback:</p>
-          <p className="text-gray-600 mb-4 whitespace-pre-wrap">{result.feedback}</p>
-          <p className="text-gray-700 font-medium mb-2">Suggestions:</p>
-          <ul className="list-disc pl-5 text-gray-600 space-y-1">
-            {result.suggestions.map((s: string, i: number) => (
-              <li key={i}>{s}</li>
-            ))}
-          </ul>
-        </div>
-      )}
+          {result && (
+            <div className="mt-10 p-6 bg-white border border-gray-200 rounded-2xl shadow-sm text-left">
+              <h4 className="text-xl font-medium text-gray-800 mb-3">Feedback</h4>
+              <p className="text-gray-700 mb-5 whitespace-pre-wrap">{result.feedback}</p>
+              <h5 className="text-lg font-medium text-gray-800 mb-2">Suggestions for Improvement</h5>
+              <ul className="list-disc pl-6 text-gray-700 space-y-2">
+                {result.suggestions.map((s: string, i: number) => (
+                  <li key={i}>{s}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </form>
+      </div>
     </section>
   )
 }
