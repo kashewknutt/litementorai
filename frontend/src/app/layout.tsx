@@ -1,4 +1,5 @@
 import { Outfit, Ovo } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const outfit = Outfit({
@@ -21,6 +22,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         className={`${outfit.className} ${ovo.className} antialiased leading-8 overflow-x-hidden text-black dark:bg-darkTheme dark:text-white `}
       >
         {children}
+        <Analytics />
       </body>
     </html>
   );
