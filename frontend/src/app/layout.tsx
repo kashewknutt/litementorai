@@ -11,7 +11,7 @@ const ovo = Ovo({
 });
 
 export const metadata = {
-  metadataBase: new URL('https://litementorai.vercel.app'), // 👈 Your deployed domain
+  metadataBase: new URL('https://litementorai.vercel.app'),
   title: 'LiteMentor.AI',
   description: 'AI-powered feedback for students. Free, private, and frontend-only.',
   openGraph: {
