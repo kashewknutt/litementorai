@@ -6,6 +6,7 @@ import HowToUse from '@/components/HowToUse'
 import Footer from '@/components/Footer'
 import QuestionForm from '@/components/QuestionForm'
 import ContactForm from '@/components/ContactForm'
+import FAQ from '@/components/FAQ';
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
       <section id="demo" className="py-16 px-4">
         <QuestionForm />
       </section>
+      <FAQ />
       <ContactForm />
       <Footer />
     </main>
