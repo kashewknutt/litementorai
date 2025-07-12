@@ -11,9 +11,26 @@ const ovo = Ovo({
 });
 
 export const metadata = {
-  title: 'LiteMentor AI',
-  description: 'Multilingual AI feedback for students — minimal, private, frontend-only.',
-};
+  metadataBase: new URL('https://litementorai.vercel.app'), // 👈 Your deployed domain
+  title: 'LiteMentor.AI',
+  description: 'AI-powered feedback for students. Free, private, and frontend-only.',
+  openGraph: {
+    title: 'LiteMentor.AI',
+    description: 'Get instant feedback on your written answers — clarity, logic, and suggestions. Free & private.',
+    images: ['/og-cover.png'],
+    url: 'https://litementorai.vercel.app',
+    siteName: 'LiteMentor.AI',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'LiteMentor.AI',
+    description: 'Free academic AI feedback — no accounts, no backend.',
+    images: ['/og-cover.png'],
+  },
+}
+
+
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
