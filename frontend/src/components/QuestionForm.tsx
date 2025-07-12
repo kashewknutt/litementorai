@@ -3,14 +3,13 @@
 
 import { evaluateAnswer, EvaluationResult } from '@/lib/evaluateAnswer'
 import { useState } from 'react'
-import { Info } from 'lucide-react'
 
 export default function QuestionForm() {
   const [question, setQuestion] = useState('')
   const [answer, setAnswer] = useState('')
   const [result, setResult] = useState<EvaluationResult | null>(null)
   const [loading, setLoading] = useState(false)
-  const [openAiKey, setOpenAiKey] = useState('')
+  // const [openAiKey, setOpenAiKey] = useState('')
 
   const handleEvaluate = async () => {
     if (!question || !answer) return
@@ -25,7 +24,7 @@ export default function QuestionForm() {
       <div className="max-w-3xl mx-auto text-center">
         <h2 className="text-4xl font-ovo text-gray-800 mb-4">Try It Yourself</h2>
         <p className="text-lg font-outfit text-gray-600 mb-8">
-          Paste your question and answer below. We'll give you clear AI feedback — free and private.
+          Paste your question and answer below. We&apos;ll give you clear AI feedback — free and private.
         </p>
         <form className="space-y-6">
           <div className="grid gap-6">
