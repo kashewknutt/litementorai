@@ -1,12 +1,11 @@
-// components/QuestionForm.tsx
 'use client'
 
-import { evaluateAnswer } from '@/lib/evaluateAnswer'
 import { useEffect, useState } from 'react'
 import SampleQuestions from './SampleQuestions'
-import { Info, Clock, ChevronRight, Star } from 'lucide-react'
+import { Info, Clock, ChevronRight, Star, ChevronDown } from 'lucide-react'
 import Toast from './Toast'
 import { EvaluationResult } from '@/types'
+import { evaluateAnswer } from '@/lib/evaluateAnswer'
 
 interface HistoryItem {
   question: string
@@ -27,9 +26,26 @@ export default function QuestionForm() {
   const [result, setResult] = useState<EvaluationResult | null>(null)
   const [loading, setLoading] = useState(false)
   const [openAiKey, setOpenAiKey] = useState('')
+  const [location, setLocation] = useState('')
+  const [showAdvanced, setShowAdvanced] = useState(false)
+  const [rubricLoadingTextIndex, setRubricLoadingTextIndex] = useState(0)
+  const [loadingStage, setLoadingStage] = useState<'idle' | 'rubric' | 'evaluating'>('idle')
   const [history, setHistory] = useState<HistoryItem[]>([])
   const [selectedHistoryIndex, setSelectedHistoryIndex] = useState<number | null>(null)
+  const [rubricInfo, setRubricInfo] = useState<string | null>(null)
   const [toastMessage, setToastMessage] = useState<string | null>(null)
+
+  const rubricTexts = [
+    'Fetching education board expectations...',
+    'Analyzing regional evaluation style...',
+    'Applying rubric-based metrics...'
+  ]
+
+  const evalTexts = [
+    'Evaluating clarity and logic...',
+    'Identifying improvement points...',
+    'Scoring your answer...'
+  ]
 
   useEffect(() => {
     const saved = localStorage.getItem('lite-mentor-history')
@@ -40,16 +56,69 @@ export default function QuestionForm() {
     localStorage.setItem('lite-mentor-history', JSON.stringify(history))
   }, [history])
 
+  useEffect(() => {
+    let interval: any
+    if (loadingStage === 'rubric') {
+      interval = setInterval(() => {
+        setRubricLoadingTextIndex((prev) => (prev + 1) % rubricTexts.length)
+      }, 2000)
+    } else if (loadingStage === 'evaluating') {
+      interval = setInterval(() => {
+        setRubricLoadingTextIndex((prev) => (prev + 1) % evalTexts.length)
+      }, 2000)
+    }
+    return () => clearInterval(interval)
+  }, [loadingStage])
+
   const handleEvaluate = async () => {
     if (!question || !answer) return
     setLoading(true)
-    const res = await evaluateAnswer(question, answer)
-    setResult(res)
-    setToastMessage('Evaluation complete!')
-    setHistory((prev) => [{ question, answer, ...res }, ...prev.slice(0, 9)])
-    setSelectedHistoryIndex(null)
-    setLoading(false)
+    try {
+      if (location == '') {
+        setLoadingStage('evaluating')
+        const res = await evaluateAnswer(question, answer)
+        setResult(res)
+        setToastMessage('Evaluation complete!')
+        setHistory((prev) => [{ question, answer, ...res }, ...prev.slice(0, 9)])
+        setSelectedHistoryIndex(null)
+        setLoading(false)
+        setLoadingStage('idle')
+      } else {
+        setLoadingStage('rubric')
+        const rubricRes = await fetch("http://127.0.0.1:8000/rubric-info", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ location }),
+        })
+        const { rubric } = await rubricRes.json()
+        setRubricInfo(rubric)
+        setLoadingStage('evaluating')
+
+        const evalRes = await fetch("http://127.0.0.1:8000/evaluate-rubric", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question, answer, rubric, rubric_details: rubric })
+        })
+        const data = await evalRes.json()
+
+        if ('error' in data) throw new Error(data.error)
+
+        setResult(data)
+        setToastMessage('Evaluation complete!')
+        setHistory((prev) => [{ question, answer, ...data }, ...prev.slice(0, 9)])
+        setSelectedHistoryIndex(null)
+      }
+    } catch (e) {
+      console.error(e)
+    } finally {
+      setLoading(false)
+      setLoadingStage('idle')
+    }
   }
+
+  useEffect(() => {
+    setRubricInfo(null)
+  }, [question, location])
 
   const handleHistoryClick = (index: number) => {
     const item = history[index]
@@ -77,6 +146,45 @@ export default function QuestionForm() {
             Get instant AI feedback on your academic responses. Free, private, and secure.
           </p>
         </div>
+
+        <div className="text-right mb-4">
+          <button
+            type="button"
+            onClick={() => setShowAdvanced((prev) => !prev)}
+            className="text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1"
+          >
+            Additional Preferences
+            <ChevronDown size={14} className={`transition-transform ${showAdvanced ? 'rotate-180' : ''}`} />
+          </button>
+        </div>
+
+        {showAdvanced && (
+          <div className="mb-6 border border-gray-200 rounded-lg p-4 bg-gray-50">
+            <label className="block text-sm font-medium text-gray-700 mb-1">Board / Region / City</label>
+            <input
+              type="text"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              placeholder="e.g. CBSE Delhi or Bavaria"
+              className="w-full p-2 border border-gray-300 rounded-md text-sm"
+            />
+          </div>
+        )}
+
+        {rubricInfo && (
+          <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 text-sm p-4 rounded-lg mb-6">
+            <h4 className="font-medium mb-2">📘 Regional Grading Rubric Info</h4>
+            <p className="whitespace-pre-wrap leading-relaxed">{rubricInfo}</p>
+          </div>
+        )}
+
+        {loading && (
+          <div className="text-center mb-6 text-sky-700 font-medium animate-pulse">
+            {loadingStage === 'rubric'
+              ? rubricTexts[rubricLoadingTextIndex]
+              : evalTexts[rubricLoadingTextIndex]}
+          </div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           <div className="lg:col-span-1">
