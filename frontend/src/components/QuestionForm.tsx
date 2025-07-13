@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { micromark } from 'micromark'
 import SampleQuestions from './SampleQuestions'
 import { Info, Clock, ChevronRight, Star, ChevronDown } from 'lucide-react'
 import Toast from './Toast'
@@ -57,7 +58,7 @@ export default function QuestionForm() {
   }, [history])
 
   useEffect(() => {
-    let interval: any
+    let interval: NodeJS.Timeout
     if (loadingStage === 'rubric') {
       interval = setInterval(() => {
         setRubricLoadingTextIndex((prev) => (prev + 1) % rubricTexts.length)
@@ -68,7 +69,7 @@ export default function QuestionForm() {
       }, 2000)
     }
     return () => clearInterval(interval)
-  }, [loadingStage])
+  }, [loadingStage, rubricTexts.length, evalTexts.length])
 
   const handleEvaluate = async () => {
     if (!question || !answer) return
@@ -172,9 +173,9 @@ export default function QuestionForm() {
         )}
 
         {rubricInfo && (
-          <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 text-sm p-4 rounded-lg mb-6">
+          <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 text-sm p-4 rounded-lg mb-6" style={{ maxHeight: '320px', overflowY: 'auto' }}>
             <h4 className="font-medium mb-2">📘 Regional Grading Rubric Info</h4>
-            <p className="whitespace-pre-wrap leading-relaxed">{rubricInfo}</p>
+            <div className="prose prose-sm max-w-none text-yellow-900" dangerouslySetInnerHTML={{ __html: micromark(rubricInfo) }} />
           </div>
         )}
 
