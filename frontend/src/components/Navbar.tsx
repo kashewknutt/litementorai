@@ -21,7 +21,7 @@ export default function Navbar() {
           href="https://github.com/kashewknutt/reddit_persona_scrapper"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-2 px-8 py-2 border border-gray-300 rounded-lg transition duration-300 hover:bg-emerald-300/30 relative group"
+          className="flex items-center gap-2 px-8 py-2 border border-gray-300 rounded-lg transition duration-300 hover:bg-sky-300/30 relative group"
           >
           <Image src="/github.svg" alt="GitHub" width={16} height={16} />
           <span className="text-sm text-gray-700">Star</span>
