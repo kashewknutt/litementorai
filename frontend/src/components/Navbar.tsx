@@ -18,13 +18,19 @@ export default function Navbar() {
           <Link href="#faq" className="hover:text-sky-500">FAQ</Link>
           <Link href="#contact" className="hover:text-sky-500">Contact</Link>
           <a
-            href="https://github.com/kashewknutt/litementorai"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="ml-4 flex items-center gap-2 px-8 py-2 border border-gray-300 rounded-lg transition duration-300 hover:bg-sky-100/30"
+          href="https://github.com/kashewknutt/reddit_persona_scrapper"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-2 px-8 py-2 border border-gray-300 rounded-lg transition duration-300 hover:bg-sky-300/30 relative group"
           >
-            <Image src="/github.svg" alt="GitHub" width={16} height={16} />
-            <span className="text-sm text-gray-700">Star</span>
+          <Image src="/github.svg" alt="GitHub" width={16} height={16} />
+          <span className="text-sm text-gray-700">Star</span>
+          <div className="w-8 h-4 bg-gray-300 text-white text-xs flex items-center justify-center rounded-full cursor-pointer group-hover:bg-gray-400">
+            i
+          </div>
+          <div className="absolute bottom-[-80px] w-full left-1/2 transform -translate-x-1/2 bg-gray-700 text-white text-xs rounded-md px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            It would mean a lot if you starred the repo on GitHub! Show your support!
+          </div>
           </a>
         </div>
         <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden">
