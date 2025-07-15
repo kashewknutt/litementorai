@@ -6,6 +6,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
+import uvicorn
 from utils.llm import call_llm_with_fallback
 from agents.rubric import rubric_prompt_template
 
@@ -125,3 +126,7 @@ def evaluate_rubric(data: RubricEvalRequest):
             print("No JSON block found in response", flush=True)
 
     return {"error": "All rubric-based providers failed."}
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8080))
+    uvicorn.run("main:app", host="0.0.0.0", port=port)
