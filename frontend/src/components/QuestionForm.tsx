@@ -86,7 +86,7 @@ export default function QuestionForm() {
         setLoadingStage('idle')
       } else {
         setLoadingStage('rubric')
-        const rubricRes = await fetch("http://127.0.0.1:8000/rubric-info", {
+        const rubricRes = await fetch("https://litementorai.onrender.com/rubric-info", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ location }),
@@ -95,7 +95,7 @@ export default function QuestionForm() {
         setRubricInfo(rubric)
         setLoadingStage('evaluating')
 
-        const evalRes = await fetch("http://127.0.0.1:8000/evaluate-rubric", {
+        const evalRes = await fetch("https://litementorai.onrender.com/evaluate-rubric", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ question, answer, rubric, rubric_details: rubric })
