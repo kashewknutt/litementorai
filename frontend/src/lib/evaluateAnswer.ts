@@ -4,7 +4,7 @@ export async function evaluateAnswer(
   question: string,
   answer: string
 ): Promise<EvaluationResult> {
-  const response = await fetch("https://litementorai.onrender.com/evaluate", {
+  const response = await fetch("https://litementorai-365628037012.asia-south1.run.app/evaluate", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
